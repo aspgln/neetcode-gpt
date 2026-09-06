@@ -7,6 +7,7 @@ class Solution:
         # note that N is just len(X)
         return -2 * np.dot(ground_truth - model_prediction, X[:, desired_weight]) / N
 
+
     def get_model_prediction(self, X: NDArray[np.float64], weights: NDArray[np.float64]) -> NDArray[np.float64]:
         return np.squeeze(np.matmul(X, weights))
 
@@ -26,15 +27,25 @@ class Solution:
         # Return np.round(final_weights, 5)
 
         weights = np.copy(initial_weights)
-        N = len(X)
-        M = len(X[0])
         for _ in range(num_iterations):
-            # forward model
-            y_pred = self.get_model_prediction(X, weights)        
-            for j in range(M):
-                # compute grad
-                grad = self.get_derivative(y_pred, Y, N, X, j)
-                # update 
-                weights[j] = weights[j] - self.learning_rate * grad
+            # forward: 
+            y_pred = X @ weights
+
+            # computet grad 
+            # grad = -2 * np.dot(Y - y_pred, X.T) / N
+            N = len(X)
+            grad = -2 / N * X.T @ (Y - y_pred)     # (M,) — all weights at once
+
+            weights = weights - self.learning_rate * grad
+            # N = len(X)
+            # M = len(X[0])
+            # for _ in range(num_iterations):
+            #     # forward model
+            #     y_pred = self.get_model_prediction(X, weights)        
+            #     for j in range(M):
+            #         # compute grad
+            #         grad = self.get_derivative(y_pred, Y, N, X, j)
+            #         # update 
+            #         weights[j] = weights[j] - self.learning_rate * grad
 
         return weights.round(5)
