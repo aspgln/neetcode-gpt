@@ -6,13 +6,11 @@ class Solution:
     def get_model_prediction(self, X: NDArray[np.float64], weights: NDArray[np.float64]) -> NDArray[np.float64]:
         # X is (n, m), weights is (m,) -> return (n,) predictions
         # Round to 5 decimal places
-        
-        Y =  X @ weights
-        return Y.round(5)
+        y = X @ weights
+        return y.round(5)
 
     def get_error(self, model_prediction: NDArray[np.float64], ground_truth: NDArray[np.float64]) -> float:
         # Compute mean squared error between predictions and ground truth
         # Round to 5 decimal places
-        a =(np.sum((ground_truth - model_prediction)**2))/len(ground_truth)
-        print(a)
-        return a.round(5)
+        res = ground_truth - model_prediction
+        return np.mean(np.square(res)).round(5)
